@@ -1,5 +1,7 @@
 # fullcalendar-csp-demo
 
+https://fullcalendar-csp-demo.pages.dev/
+
 We’ve created a minimal demo page that uses FullCalendar and can be easily hosted on Cloudflare Pages to illustrate the issue.
 
 The purpose of this demo is to add a Content Security Policy (CSP) header with
