@@ -13,7 +13,6 @@
         header a { color: var(--muted); text-decoration: none; }
         #calendar { max-width: 1100px; margin: 18px auto; background:#0f1524; border:1px solid #1b2233; border-radius: 14px; padding: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
 
-        /* Tweak FullCalendar to look decent in dark mode */
         .fc { --fc-border-color: #1b2233; --fc-page-bg-color: #0f1524; --fc-neutral-bg-color: #101728; --fc-today-bg-color: rgba(120,162,255,.10); --fc-now-indicator-color: #ff7a7a; }
         .fc .fc-toolbar-title { color: var(--fg); font-weight: 600; }
         .fc .fc-button { background:#1a2440; border:1px solid #243057; color:#dbe4ff; text-transform: capitalize; }
@@ -23,6 +22,11 @@
         .fc .fc-event { border:none; }
         .toast { position: fixed; right: 16px; bottom: 16px; background:#111a2e; color:#cbd5e1; border:1px solid #1f2a44; padding:10px 12px; border-radius: 10px; opacity:0; transform: translateY(10px); transition: .2s ease; font-size: 14px; }
         .toast.show { opacity:1; transform: translateY(0); }
+
+        .alert { border-radius: 10px; padding: 12px 14px; margin: 12px auto 0; max-width: 1100px; border: 1px solid; }
+        .alert-danger { background: #2a0f12; color: #ffd1d6; border-color: #52161b; }
+        .alert a { color: #ffe4e8; text-decoration: underline; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -30,6 +34,12 @@
     <h1>FullCalendar Demo</h1>
     <a href="https://fullcalendar.io/docs" target="_blank" rel="noopener">Docs ↗</a>
 </header>
+
+<div id="tt-alert" class="alert alert-danger hidden" role="alert" aria-live="assertive">
+    <strong>Can’t see the calendar?</strong> Check the browser console (DevTools → Console) for Trusted Types errors.
+    <pre style="white-space:pre-wrap;margin:8px 0 0 0">index.global.min.js:6 This document requires 'TrustedHTML' assignment.
+index.global.min.js:6 Uncaught TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.</pre>
+</div>
 
 <div id="calendar"></div>
 <div id="toast" class="toast">Event created. Click an event to remove it.</div>
@@ -40,10 +50,9 @@
         const calendarEl = document.getElementById('calendar');
         const toast = document.getElementById('toast');
 
-        // Demo events
         const today = new Date();
         const y = today.getFullYear();
-        const m = today.getMonth(); // 0-indexed
+        const m = today.getMonth();
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -88,7 +97,13 @@
             ]
         });
 
-        calendar.render();
+        try {
+            calendar.render();
+        } catch (e) {
+            const alertEl = document.getElementById('tt-alert');
+            if (alertEl) alertEl.classList.remove('hidden');
+            console.error('FullCalendar failed to render due to Trusted Types enforcement:', e);
+        }
 
         function showToast() {
             toast.classList.add('show');
