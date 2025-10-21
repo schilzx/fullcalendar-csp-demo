@@ -99,10 +99,10 @@ index.global.min.js:6 Uncaught TypeError: Failed to set the 'innerHTML' property
 
         try {
             calendar.render();
-        } catch (e) {
+        } catch (ex) {
             const alertEl = document.getElementById('tt-alert');
             if (alertEl) alertEl.classList.remove('hidden');
-            console.error('FullCalendar failed to render due to Trusted Types enforcement:', e);
+            console.error(ex);
         }
 
         function showToast() {
